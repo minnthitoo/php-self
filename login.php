@@ -1,6 +1,31 @@
 <?php
-  print'<pre>';
-  print_r($_POST);
+require 'config.php';
+  if(!empty($_POST)){
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    if($email == '' || $password == ''){
+      echo '<script>alert("fill all field");</script>';
+    }else{
+      $sql = 'select * from users where email=:email';
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindValue(':email', $email);
+      $stmt->execute();
+      $result = $stmt->fetch(PDO::FETCH_ASSOC);
+      print'<pre>';
+      print_r($result);
+      $check = password_verify($password, $result['password']);
+
+      if($check){
+        $_SESSION['user_id'] = $result['id'];
+        $_SESSION['logged_in'] = time();
+        header('Location: index.php');
+        exit();
+      }else{
+        echo '<script>alert("Incorrect");</script>';
+      }
+
+    }
+  }
 ?>
 
 <!DOCTYPE html>
