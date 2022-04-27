@@ -53,8 +53,8 @@ if(empty($_SESSION['user_id']) || empty($_SESSION['logged_in'])){
             <td><?php echo $value['description'] ?></td>
             <td><?php echo date('d-m-Y', strtotime($value['created_at'])) ?></td>
             <td>
-              <a href="edit.php?id=<?php $value['id'] ?>">Edit</a>
-              <a href="delete.php?id=<?php $value['id'] ?>">Delete</a>
+              <a href="edit.php?id=<?php echo $value['id'] ?>">Edit</a>
+              <a href="delete.php?id=<?php echo $value['id'] ?>">Delete</a>
             </td>
           </tr>
           <?php
