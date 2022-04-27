@@ -1,5 +1,6 @@
 <?php
 require 'config.php';
+session_start();
   if(!empty($_POST)){
     $email = $_POST['email'];
     $password = $_POST['password'];
