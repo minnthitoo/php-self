@@ -8,15 +8,31 @@ if (!empty($_POST)) {
   if ($title == '' || $description == '') {
     echo '<script>alert("fill all the fields");</script>';
   } else {
-    $sql = 'insert into posts(`title`, `description`) values (:title, :description);';
+
+    $targetFile = 'images/'.($_FILES['image']['name']);
+    $imagetype = pathinfo($targetFile, PATHINFO_EXTENSION);
+
+    if($imagetype != 'png' && $imagetype != 'jpg' && $imagetype != 'jpeg'){
+      echo '<script>alert("Add jpg or png or jpeg");</script>';
+    }else{
+      $move = move_uploaded_file($_FILES['image']['tmp_name'],$targetFile);
+      if($move){
+        echo '<script>alert("Success");</script>';
+      }
+    }
+
+    $sql = 'insert into posts(`title`, `description`, `image`) values (:title, :description, :image);';
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':title', $title);
     $stmt->bindValue(':description', $description);
+    $stmt->bindValue(':image', $_FILES['image']['name']);
     $res = $stmt->execute();
+
     if ($res) {
       echo '<script>alert("done");
         window.location.href = "index.php";</script>';
     }
+
   }
 }
 
@@ -38,7 +54,7 @@ if (!empty($_POST)) {
   <div class="card">
     <div class="card-body">
       <h1>Add New Post</h1>
-      <form action="add.php" method="post">
+      <form action="add.php" method="post" enctype="multipart/form-data">
         <div class="form-group mt-3">
           <label for="title">Title</label>
           <input type="text" name="title" class="form-control" id="">
@@ -46,6 +62,10 @@ if (!empty($_POST)) {
         <div class="form-group mt-3">
           <label for="description">Description</label>
           <textarea name="description" class="form-control" id="" cols="30" rows="10"></textarea>
+        </div>
+        <div class="form-group mt-3">
+          <label for="image">Image add</label> <br>
+          <input type="file" name="image" id="" required>
         </div>
         <div class="form-group mt-3">
           <input type="submit" value="Post">
