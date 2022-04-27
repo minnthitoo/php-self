@@ -2,6 +2,29 @@
 
   require'config.php';
 
+  if(!empty($_POST)){
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    if($title == '' || $description == ''){
+      echo '<script>alert("Fill all field");</script>';
+    }else{
+      $sql = 'update posts set title=:title, description=:description where id = :id;';
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindValue(':title', $title);
+      $stmt->bindValue(':description', $description);
+      $stmt->bindValue(':id', $_GET['id']);
+      $res = $stmt->execute();
+
+      if($res){
+        echo '<script>alert("success");
+        window.location.href="index.php";
+        </script>';
+      }else{
+        echo '<script>alert("Error");</script>';
+      }
+    }
+  }
+
   $pdo_stmt = 'select * from posts where id='.$_GET['id'];
   $stmt = $pdo->prepare($pdo_stmt);
   $stmt->execute();
